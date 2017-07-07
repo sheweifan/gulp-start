@@ -10,15 +10,16 @@ var browserSync = require('browser-sync').create()
 
 
 var reload = browserSync.reload
-var styleDir = './Styles/'
+var styleDir = __dirname+ '/Styles/'
 var autoprefixerOptions= {
     browsers:['android 4','ios 7'], // if PC ["> 5%", "Firefox >= 20",'last 2 versions','IE 7'],
     remove:true
 }
 var base64Options= {
-    extensions: ['png'],
+    baseDir: './',
+    extensions: ['png','gif','jpg','jpeg'],
     maxImageSize: 10 * 1024,
-    debug: false
+    debug: true
 }
  
 var _less = function(input,output){
@@ -40,12 +41,10 @@ gulp.task('less', function() {
 
 gulp.task('build', function(){
     gulp.src(styleDir+'**/*.less')
-        .pipe(plumber())
         .pipe(less())
         .pipe(autoprefixer(autoprefixerOptions))
         .pipe(base64(base64Options))
         .pipe(cssmin())
-        .pipe(plumber.stop())
         .pipe(gulp.dest(styleDir))
 })
 
