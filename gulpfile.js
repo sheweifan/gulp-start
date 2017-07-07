@@ -1,44 +1,83 @@
-var gulp = require('gulp');
-var server = require('gulp-server-livereload');
-var less = require('gulp-less');
-var notify = require('gulp-notify');
-var plumber = require('gulp-plumber');
-var spriter = require('gulp-css-spriter');
-var autoprefixer = require('gulp-autoprefixer');
+var gulp = require('gulp')
+var less = require('gulp-less')
+// var server = require('gulp-server-livereload')
+var autoprefixer = require('gulp-autoprefixer')
+var base64 = require('gulp-base64')
+var cssmin = require('gulp-minify-css')
+var sourcemaps = require('gulp-sourcemaps')
+var plumber = require('gulp-plumber')
+var browserSync = require('browser-sync').create()
 
-var style_dir = __dirname+'/Styles/**/*.less';
-var Image_dir = __dirname+'/Styles/**/*.less';
 
-gulp.task('lesss', function () {
-    gulp.src(style_dir)
-        .pipe(plumber({errorHandler: notify.onError('Error: <%= error.message %>')}))
+var reload = browserSync.reload
+var styleDir = './Styles/'
+var autoprefixerOptions= {
+    browsers:['android 4','ios 7'], // if PC ["> 5%", "Firefox >= 20",'last 2 versions','IE 7'],
+    remove:true
+}
+var base64Options= {
+    extensions: ['png'],
+    maxImageSize: 10 * 1024,
+    debug: false
+}
+ 
+var _less = function(input,output){
+    gulp.src(input)
+        .pipe(plumber())
+        .pipe(sourcemaps.init())
         .pipe(less())
-        .pipe(autoprefixer({
-        	 browsers: ["> 5%", "Firefox >= 20",'last 2 versions','IE 7'],
-            cascade: false,
-            remove:false 
-        }))
-        // .pipe(spriter({
-        // 	spriteSheet:'Images/spriter.png',
-        // 	pathToSpriteSheetFromCSS:'Images/spriter.png'
-        // }))
-        .pipe(gulp.dest(__dirname+'/Styles/'));
+        .pipe(autoprefixer(autoprefixerOptions))
+        .pipe(sourcemaps.write())
+        .pipe(plumber.stop())
+        .pipe(gulp.dest(output))
+        .pipe(reload({stream: true}));
+}
+
+
+gulp.task('less', function() {
+  _less([styleDir+'**/*.less'],styleDir);
 });
 
+gulp.task('build', function(){
+    gulp.src(styleDir+'**/*.less')
+        .pipe(plumber())
+        .pipe(less())
+        .pipe(autoprefixer(autoprefixerOptions))
+        .pipe(base64(base64Options))
+        .pipe(cssmin())
+        .pipe(plumber.stop())
+        .pipe(gulp.dest(styleDir))
+})
 
-gulp.task('watch_less', function () {
-    gulp.watch(style_dir, ['lesss']);
+
+// 静态服务器
+gulp.task('default', function() {
+    browserSync.init({
+        server: {
+            baseDir: "./",
+            directory:true
+        },
+        logFileChanges:true,
+        logConnections:true,
+        files:[
+          "./Scripts/**/*.js","./Styles/**/*.css","./Views/**/*.html",
+          "./Scripts/*.js","./Styles/*.css","./Views/*.html"
+        ],
+        open:false,
+        ghostMode: {
+            clicks: true,
+            forms: true,
+            scroll: true
+        }
+    });
+
+    gulp.watch([styleDir+'/**/*.less'],['less'])
+    
 });
 
-gulp.task('default',['watch_less'],function() {
-	gulp.src(__dirname+'/')
-		.pipe(server({
-			port: 3000,
-			livereload: true,
-			directoryListing: true,
-			open: false
-		})
-	);
-});
-
-
+// 代理
+// gulp.task('browser-sync', function() {
+//     browserSync.init({
+//         proxy: "你的域名或IP"
+//     });
+// });
