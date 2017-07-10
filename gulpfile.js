@@ -7,7 +7,9 @@ var cssmin = require('gulp-minify-css')
 var sourcemaps = require('gulp-sourcemaps')
 var plumber = require('gulp-plumber')
 var browserSync = require('browser-sync').create()
+var argv = require('minimist')(process.argv.slice(2));
 
+console.log(argv)
 
 var reload = browserSync.reload
 var styleDir = __dirname+ '/Styles/'
@@ -67,7 +69,8 @@ gulp.task('default', function() {
             clicks: true,
             forms: true,
             scroll: true
-        }
+        },
+        port: argv.port || 3000
     });
 
     gulp.watch([styleDir+'/**/*.less'],['less'])
