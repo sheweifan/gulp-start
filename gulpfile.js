@@ -8,6 +8,8 @@ var sourcemaps = require('gulp-sourcemaps')
 var plumber = require('gulp-plumber')
 var browserSync = require('browser-sync').create()
 var argv = require('minimist')(process.argv.slice(2));
+var cleanCSS = require('gulp-clean-css');
+
 
 console.log(argv)
 
@@ -46,7 +48,7 @@ gulp.task('build', function(){
         .pipe(less())
         .pipe(autoprefixer(autoprefixerOptions))
         .pipe(base64(base64Options))
-        .pipe(cssmin())
+        .pipe(cleanCSS())
         .pipe(gulp.dest(styleDir))
 })
 
