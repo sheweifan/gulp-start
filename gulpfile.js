@@ -9,6 +9,7 @@ var plumber = require('gulp-plumber')
 var browserSync = require('browser-sync').create()
 var argv = require('minimist')(process.argv.slice(2));
 var cleanCSS = require('gulp-clean-css');
+var gulpif = require('gulp-if');
 
 
 console.log(argv)
@@ -26,13 +27,15 @@ var base64Options= {
     debug: true
 }
  
-var _less = function(input,output){
+var _less = function(input,output,dev){
     gulp.src(input)
         .pipe(plumber())
-        .pipe(sourcemaps.init())
+        .pipe(gulpif(dev,sourcemaps.init()))
         .pipe(less())
         .pipe(autoprefixer(autoprefixerOptions))
-        .pipe(sourcemaps.write())
+        .pipe(gulpif(!dev,cleanCSS()))
+        .pipe(gulpif(!dev,base64(base64Options)))
+        .pipe(gulpif(dev,sourcemaps.write()))
         .pipe(plumber.stop())
         .pipe(gulp.dest(output))
         .pipe(reload({stream: true}));
@@ -40,16 +43,17 @@ var _less = function(input,output){
 
 
 gulp.task('less', function() {
-  _less([styleDir+'**/*.less'],styleDir);
+  _less([styleDir+'**/*.less'],styleDir,true);
 });
 
 gulp.task('build', function(){
-    gulp.src(styleDir+'**/*.less')
-        .pipe(less())
-        .pipe(autoprefixer(autoprefixerOptions))
-        .pipe(base64(base64Options))
-        .pipe(cleanCSS())
-        .pipe(gulp.dest(styleDir))
+    _less([styleDir+'**/*.less'],styleDir,false);
+    // gulp.src(styleDir+'**/*.less')
+    //     .pipe(less())
+    //     .pipe(autoprefixer(autoprefixerOptions))
+    //     .pipe(base64(base64Options))
+    //     .pipe(cleanCSS())
+    //     .pipe(gulp.dest(styleDir))
 })
 
 
