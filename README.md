@@ -13,5 +13,5 @@
 ## 快速开始
     $ git clone https://github.com/sheweifan/gulp-start.git ./yourPath
     $ cd yourPath
-    $ npm i && npm start
+    $ npm i && gulp --port 3000
     $ npm run build
