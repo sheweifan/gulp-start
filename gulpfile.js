@@ -64,7 +64,7 @@ gulp.task('es', function() {
 
 gulp.task('build', function(){
     _less([styleDir+'**/*.less'],styleDir,false);
-    _less([scriptDir+'**/*.es'],scriptDir,false);
+    _es([scriptDir+'**/*.es'],scriptDir,false);
     // gulp.src(styleDir+'**/*.less')
     //     .pipe(less())
     //     .pipe(autoprefixer(autoprefixerOptions))
