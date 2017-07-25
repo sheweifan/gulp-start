@@ -1,0 +1,36 @@
+@keyframes scale{
+  0%,100%{
+    transform:scale(1);
+    -webkit-transform:scale(1);
+  }
+  50%{
+    transform:scale(0.9);
+    -webkit-transform:scale(0.9);
+  }
+}
+
+.test{
+	@w:200px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: @w;
+	height: @w;
+	border: 1px solid #e5e5e5;
+	position: fixed;
+	left: 50%;
+	top: 50%;
+	margin-left: -@w/2;
+	margin-top: -@w/2;
+	animation: scale 1s infinite;
+	&:before{
+		content: "";
+		display: inline-block;
+		width: 20px;
+		height: 38px;
+		vertical-align: middle;
+		background: url("/Images/test.jpg") no-repeat center / 100% auto;
+		margin-right: 10px;
+	}
+}
+

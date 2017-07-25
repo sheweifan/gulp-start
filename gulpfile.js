@@ -10,12 +10,15 @@ var browserSync = require('browser-sync').create()
 var argv = require('minimist')(process.argv.slice(2));
 var cleanCSS = require('gulp-clean-css');
 var gulpif = require('gulp-if');
+const babel = require('gulp-babel');
+const uglify = require('gulp-uglify');
 
 
 console.log(argv)
 
 var reload = browserSync.reload
 var styleDir = __dirname+ '/Styles/'
+var scriptDir = __dirname+ '/Scripts/'
 var autoprefixerOptions= {
     browsers:['android 4','ios 7'], // if PC ["> 5%", "Firefox >= 20",'last 2 versions','IE 7'],
     remove:true
@@ -41,13 +44,27 @@ var _less = function(input,output,dev){
         .pipe(reload({stream: true}));
 }
 
+var _es = function(input,output,dev){
+	gulp.src(input)
+	    .pipe(babel({
+	      presets: ['es2015']
+	    }))
+	    .pipe(gulpif(dev,uglify()))
+	    .pipe(gulp.dest(output))
+}
+
 
 gulp.task('less', function() {
   _less([styleDir+'**/*.less'],styleDir,true);
 });
 
+gulp.task('es', function() {
+    _es([scriptDir+'**/*.es'],scriptDir,true);
+});
+
 gulp.task('build', function(){
     _less([styleDir+'**/*.less'],styleDir,false);
+    _less([scriptDir+'**/*.es'],scriptDir,false);
     // gulp.src(styleDir+'**/*.less')
     //     .pipe(less())
     //     .pipe(autoprefixer(autoprefixerOptions))
@@ -80,6 +97,7 @@ gulp.task('default', function() {
     });
 
     gulp.watch([styleDir+'/**/*.less'],['less'])
+    gulp.watch([scriptDir+'/**/*.es'],['es'])
     
 });
 
