@@ -46,10 +46,12 @@ var _less = function(input,output,dev){
 
 var _es = function(input,output,dev){
 	gulp.src(input)
+        .pipe(plumber())
 	    .pipe(babel({
 	      presets: ['es2015']
 	    }))
 	    .pipe(gulpif(dev,uglify()))
+        .pipe(plumber.stop())
 	    .pipe(gulp.dest(output))
 }
 
