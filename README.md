@@ -9,6 +9,7 @@
     * 编译less
     * 小于20kb的图片打包base64
     * 添加前缀
+    * es6=>es5
 
 ## 快速开始
     $ git clone https://github.com/sheweifan/gulp-start.git ./yourPath
