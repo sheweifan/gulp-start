@@ -77,7 +77,7 @@ gulp.task('build', function(){
 
 
 // 静态服务器
-gulp.task('default', function() {
+gulp.task('default',['less','es'],function() {
     browserSync.init({
         server: {
             baseDir: "./",
