@@ -12,6 +12,7 @@ var cleanCSS = require('gulp-clean-css');
 var gulpif = require('gulp-if');
 const babel = require('gulp-babel');
 const uglify = require('gulp-uglify');
+var spriter = require('gulp-css-spriter');
 
 
 console.log(argv)
@@ -37,7 +38,13 @@ var _less = function(input,output,dev){
         .pipe(less())
         .pipe(autoprefixer(autoprefixerOptions))
         .pipe(gulpif(!dev,cleanCSS()))
+        // m
         .pipe(gulpif(!dev,base64(base64Options)))
+        // pc  http://www.cnblogs.com/dreamback/p/gulp-css-spriter.html
+        // .pipe(spriter({
+        //     spriteSheet:'./images/spriter.png',
+        //     pathToSpriteSheetFromCSS:'./images/spriter.png',
+        // }))
         .pipe(gulpif(dev,sourcemaps.write()))
         .pipe(plumber.stop())
         .pipe(gulp.dest(output))
