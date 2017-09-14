@@ -13,6 +13,7 @@ var gulpif = require('gulp-if');
 const babel = require('gulp-babel');
 const uglify = require('gulp-uglify');
 var spriter = require('gulp-css-spriter');
+var browserify = require('gulp-browserify');
 
 
 console.log(argv)
@@ -57,6 +58,10 @@ var _es = function(input,output,dev){
 	    .pipe(babel({
 	      presets: ['es2015']
 	    }))
+        .pipe(browserify({
+          insertGlobals : true,
+          debug : !gulp.env.production
+        }))
 	    .pipe(gulpif(dev,uglify()))
         .pipe(plumber.stop())
 	    .pipe(gulp.dest(output))
