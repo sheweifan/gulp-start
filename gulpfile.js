@@ -3,7 +3,6 @@ var less = require('gulp-less')
 // var server = require('gulp-server-livereload')
 var autoprefixer = require('gulp-autoprefixer')
 var base64 = require('gulp-base64')
-var cssmin = require('gulp-minify-css')
 var sourcemaps = require('gulp-sourcemaps')
 var plumber = require('gulp-plumber')
 var browserSync = require('browser-sync').create()
@@ -13,12 +12,13 @@ var gulpif = require('gulp-if');
 const babel = require('gulp-babel');
 const uglify = require('gulp-uglify');
 var spriter = require('gulp-css-spriter');
-var browserify = require('gulp-browserify');
-
-
+// var browserify = require('gulp-browserify');
+var webpackStream = require('webpack-stream');
+var webpack = require('webpack');
+var named = require('vinyl-named');
 console.log(argv)
 
-var reload = browserSync.reload
+var reload = browserSync.reload;
 var styleDir = __dirname+ '/Styles/'
 var scriptDir = __dirname+ '/Scripts/'
 var autoprefixerOptions= {
@@ -54,15 +54,24 @@ var _less = function(input,output,dev){
 
 var _es = function(input,output,dev){
 	gulp.src(input)
+        .pipe(named())
         .pipe(plumber())
-	    .pipe(babel({
-	      presets: ['es2015']
-	    }))
-        .pipe(browserify({
-          insertGlobals : true,
-          debug : !gulp.env.production
+        .pipe(webpackStream({
+            module: {
+                rules: [
+                    {
+                        test: /\.(js|jsx)$/,
+                        use: [{
+                            loader: 'babel-loader',
+                            options: {
+                                presets: ['env']
+                            }
+                        }],
+
+                    },
+                ]
+            },
         }))
-	    .pipe(gulpif(dev,uglify()))
         .pipe(plumber.stop())
 	    .pipe(gulp.dest(output))
 }
@@ -79,12 +88,6 @@ gulp.task('es', function() {
 gulp.task('build', function(){
     _less([styleDir+'**/*.less'],styleDir,false);
     _es([scriptDir+'**/*.es'],scriptDir,false);
-    // gulp.src(styleDir+'**/*.less')
-    //     .pipe(less())
-    //     .pipe(autoprefixer(autoprefixerOptions))
-    //     .pipe(base64(base64Options))
-    //     .pipe(cleanCSS())
-    //     .pipe(gulp.dest(styleDir))
 })
 
 
