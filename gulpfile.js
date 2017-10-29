@@ -57,6 +57,7 @@ var _es = function(input,output,dev){
         .pipe(named())
         .pipe(plumber())
         .pipe(webpackStream({
+            watch: dev,
             module: {
                 rules: [
                     {
@@ -70,8 +71,9 @@ var _es = function(input,output,dev){
 
                     },
                 ]
-            },
+            }
         }))
+        .pipe(gulpif(!dev,uglify()))
         .pipe(plumber.stop())
 	    .pipe(gulp.dest(output))
 }
