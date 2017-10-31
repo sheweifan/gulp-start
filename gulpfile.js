@@ -22,7 +22,7 @@ var reload = browserSync.reload;
 var styleDir = __dirname+ '/Styles/'
 var scriptDir = __dirname+ '/Scripts/'
 var autoprefixerOptions= {
-    browsers:['android 4','ios 7'], // if PC ["> 5%", "Firefox >= 20",'last 2 versions','IE 7'],
+    browsers: ['iOS >= 7', 'Android >= 4.1'], // if PC ["> 5%", "Firefox >= 20",'last 2 versions','IE 7'],
     remove:true
 }
 var base64Options= {
@@ -54,14 +54,14 @@ var _less = function(input,output,dev){
 
 var _es = function(input,output,dev){
 	gulp.src(input)
-        .pipe(named())
         .pipe(plumber())
+        .pipe(named())
         .pipe(webpackStream({
             watch: dev,
             module: {
                 rules: [
                     {
-                        test: /\.(js|jsx)$/,
+                        test: /\.(es|js)$/,
                         use: [{
                             loader: 'babel-loader',
                             options: {
@@ -73,7 +73,7 @@ var _es = function(input,output,dev){
                 ]
             }
         }))
-        .pipe(gulpif(!dev,uglify()))
+        .pipe(gulpif(!dev,uglify({compress:{properties:false},output:{'quote_keys':true}})))
         .pipe(plumber.stop())
 	    .pipe(gulp.dest(output))
 }
