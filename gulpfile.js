@@ -80,7 +80,11 @@ var _es = function(input,output,dev){
 
 
 gulp.task('less', function() {
-  _less([styleDir+'**/*.less'],styleDir,true);
+  _less([
+      styleDir+'**/*.less',
+      '!'+styleDir+'lib/**/*.less',
+      '!'+styleDir+'less/**/*.less'
+    ],styleDir,true);
 });
 
 gulp.task('es', function() {
@@ -88,7 +92,11 @@ gulp.task('es', function() {
 });
 
 gulp.task('build', function(){
-    _less([styleDir+'**/*.less'],styleDir,false);
+    _less([
+        styleDir+'**/*.less',
+        '!'+styleDir+'lib/**/*.less',
+        '!'+styleDir+'less/**/*.less'
+    ],styleDir,false);
     _es([scriptDir+'**/*.es'],scriptDir,false);
 })
 
