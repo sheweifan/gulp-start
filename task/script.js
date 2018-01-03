@@ -2,37 +2,41 @@ const gulp = require('gulp')
 const plumber = require('gulp-plumber')
 const gulpif = require('gulp-if')
 const uglify = require('gulp-uglify')
+const webpack = require('webpack')
 const webpackStream = require('webpack-stream')
-const babel = require('gulp-babel')
 const named = require('vinyl-named')
-const remember = require('gulp-remember')
-const cached = require('gulp-cached')
 const rename = require('gulp-rename')
-const changed = require('gulp-changed');
+
+
+// const babel = require('gulp-babel')
+// const remember = require('gulp-remember')
+// const cached = require('gulp-cached')
+// const changed = require('gulp-changed')
 
 const config = require('./config')
 const dev = config.dev
-const uglifyConfig = {
-  compress: {
-    properties: false
-  },
-  output: {
-    'quote_keys': true
-  }
-}
 
 const babelConfig = {
   presets: [
     ['env', {
       targets: {
+        // browsers: config.browserVersion
         browsers: ['last 2 versions', 'safari >= 7']
       }
+    }]
+  ],
+  plugins: [
+    ['transform-runtime', {
+      helpers: false,
+      polyfill: false,
+      regenerator: true,
+      moduleName: "babel-runtime"
     }]
   ]
 }
 
-const webpackConfig = {
-  watch: false,
+const webpackConfig = Object.assign({}, {
+  watch: dev,
   module: {
     rules: [
       {
@@ -40,26 +44,47 @@ const webpackConfig = {
         use: [{
           loader: 'babel-loader',
           options: babelConfig
-        }],
-
+        }]
       },
     ]
+  },
+  plugins: [
+    // new webpack.ProvidePlugin({
+    //   $: 'jquery',
+    //   _: 'lodash/core'
+    // }),
+  ],
+  externals: {
+    $: 'window.$'
+  }
+}, dev ? {devtool: 'cheap-source-map'}: {})
+
+const uglifyConfig = {
+  compress: {
+    properties: false
+  },
+  output: {
+    quote_keys: true
   }
 }
 
-gulp.task('script', function () {
-  gulp.src('app/script/**/*.entry.js')
-    // .pipe(changed('dist/script/'))
+const parseName = file => file.basename = file.basename.replace('.entry', '' ) // dev ? '': '.min')
+
+const script = () => {
+  gulp.src(`${config.scriptEntery}**/*.entry.js`)
+    // .pipe(changed(config.scriptOutput))
+    // .pipe(gulpif(!passCached,cached('script-task')))
     .pipe(plumber())
-    .pipe(cached('script-task'))
     .pipe(named())
     // .pipe(babel(babelConfig))
     .pipe(webpackStream(webpackConfig))
     .pipe(gulpif(!dev, uglify(uglifyConfig)))
-    .pipe(remember('scripts-task'))
+    // .pipe(remember('scripts-task'))
     .pipe(plumber.stop())
-    .pipe(rename(file => file.basename = file.basename.replace('.entry', dev ? '': '.min')))
-    .pipe(gulp.dest('dist/script/'))
-});
+    .pipe(rename(parseName))
+    .pipe(gulp.dest(config.scriptOutput))
+}
 
+gulp.task('script', script)
 
+gulp.task('script:watch', ['script'])
