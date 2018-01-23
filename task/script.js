@@ -6,6 +6,7 @@ const webpack = require('webpack')
 const webpackStream = require('webpack-stream')
 const named = require('vinyl-named')
 const rename = require('gulp-rename')
+const autoprefixer = require('autoprefixer')
 
 
 // const babel = require('gulp-babel')
@@ -46,9 +47,28 @@ const webpackConfig = Object.assign({}, {
           options: babelConfig
         }]
       },
+      {
+        test: /\.(styl|css)$/i,
+        use: [
+          'style-loader',
+          'css-loader',
+          {
+            loader: 'postcss-loader',
+            options: {
+              plugins: [
+                autoprefixer({
+                  browsers: ['iOS >= 7', 'Android >= 2']
+                })
+              ]
+            }
+          },
+          'stylus-loader'
+        ],
+      }
     ]
   },
   plugins: [
+    new webpack.optimize.ModuleConcatenationPlugin()
     // new webpack.ProvidePlugin({
     //   $: 'jquery',
     //   _: 'lodash/core'
