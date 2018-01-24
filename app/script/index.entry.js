@@ -1,4 +1,5 @@
 import $ from '$'
+import '../style/base/reset.styl'
 const b = 2
 const c = 5
 const d = 7
