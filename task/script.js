@@ -75,6 +75,14 @@ const webpackConfig = Object.assign({}, {
             }
           }
         ]
+      },
+      {
+        test: /\.(pug)$/,
+        use: [
+          {
+            loader: 'pug-loader'
+          }
+        ]
       }
     ]
   },
