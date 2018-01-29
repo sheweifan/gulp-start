@@ -14,89 +14,9 @@ const autoprefixer = require('autoprefixer')
 // const cached = require('gulp-cached')
 // const changed = require('gulp-changed')
 
+const webpackConfig = require('./webpack')
 const config = require('./config')
 const dev = config.dev
-
-const babelConfig = {
-  presets: [
-    ['env', {
-      targets: {
-        // browsers: config.browserVersion
-        browsers: ['last 2 versions', 'safari >= 7']
-      }
-    }]
-  ],
-  plugins: [
-    ['transform-runtime', {
-      helpers: false,
-      polyfill: false,
-      regenerator: true,
-      moduleName: "babel-runtime"
-    }]
-  ]
-}
-
-const webpackConfig = Object.assign({}, {
-  watch: dev,
-  module: {
-    rules: [
-      {
-        test: /\.(es|js)$/,
-        use: [{
-          loader: 'babel-loader',
-          options: babelConfig
-        }]
-      },
-      {
-        test: /\.(styl|css)$/i,
-        use: [
-          'style-loader',
-          'css-loader',
-          {
-            loader: 'postcss-loader',
-            options: {
-              plugins: [
-                autoprefixer({
-                  browsers: ['iOS >= 7', 'Android >= 2']
-                })
-              ]
-            }
-          },
-          'stylus-loader'
-        ],
-      },
-      {
-        test: /\.(png|jpg|gif)$/,
-        use: [
-          {
-            loader: 'url-loader',
-            options: {
-              limit: 8192
-            }
-          }
-        ]
-      },
-      {
-        test: /\.(pug)$/,
-        use: [
-          {
-            loader: 'pug-loader'
-          }
-        ]
-      }
-    ]
-  },
-  plugins: [
-    new webpack.optimize.ModuleConcatenationPlugin()
-    // new webpack.ProvidePlugin({
-    //   $: 'jquery',
-    //   _: 'lodash/core'
-    // }),
-  ],
-  externals: {
-    $: 'window.$'
-  }
-}, dev ? {devtool: 'cheap-source-map'}: {})
 
 const uglifyConfig = {
   compress: {
