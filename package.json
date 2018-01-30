@@ -41,6 +41,7 @@
     "gulp-stylus": "^2.7.0",
     "gulp-uglify": "^3.0.0",
     "gulp-watch": "^4.3.11",
+    "http-proxy-middleware": "^0.17.4",
     "imagemin-pngquant": "^5.0.1",
     "postcss-loader": "^2.0.10",
     "pug-loader": "^2.3.0",
