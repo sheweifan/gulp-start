@@ -1,13 +1,17 @@
 const gulp = require('gulp')
 const config = require('./config')
 const browserSync = require('browser-sync').create()
+const proxyMiddleware = require('http-proxy-middleware')
 const reload = browserSync.reload
 
 gulp.task('serve', () => {
+  var target = 'http://api.xxx.com'
+	const middleware = proxyMiddleware(['/xxx/xxx'], {target: target, changeOrigin: true});
   browserSync.init({
     server: {
       baseDir: "./dist",
-      directory: true
+      directory: true,
+			middleware: middleware
     },
     logFileChanges: true,
     logConnections: true,
@@ -22,6 +26,7 @@ gulp.task('serve', () => {
     },
     port: config.port
   })
+
   // gulp.watch([
   //   'app/**/*.js',
   //   'app/**/*.styl',
