@@ -34,12 +34,16 @@ let webpackConfig = {
         }]
       },
       {
+        test: /\.(pug)$/,
+        use: ['pug-loader']
+      },
+      {
         test: /\.(png|jpg|gif)$/,
         use: [
           {
             loader: 'url-loader',
             options: {
-              limit: 8192
+              limit: config.base64Size
             }
           }
         ]
@@ -75,7 +79,8 @@ if (dev) {
         options: {
           plugins: [
             autoprefixer({
-              browsers: ['iOS >= 7', 'Android >= 2']
+              browsers: config.browserVersion,
+              remove: true
             })
           ]
         }
