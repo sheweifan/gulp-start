@@ -2,12 +2,9 @@ const gulp = require('gulp')
 const plumber = require('gulp-plumber')
 const gulpif = require('gulp-if')
 const uglify = require('gulp-uglify')
-const webpack = require('webpack')
 const webpackStream = require('webpack-stream')
 const named = require('vinyl-named')
 const rename = require('gulp-rename')
-const autoprefixer = require('autoprefixer')
-
 
 // const babel = require('gulp-babel')
 // const remember = require('gulp-remember')
