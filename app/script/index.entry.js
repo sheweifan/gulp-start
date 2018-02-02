@@ -1,13 +1,6 @@
 import $ from '$'
 import '../style/base/reset.styl'
-const b = 2
-const c = 5
-const d = 7
-const f = 9
-const fff = 16
-$('body').css({
-  backgroundColor: 'red'
-})
-;(async () => {
-  console.log(123)
-})()
+import imgBase64 from '../image/1.png'
+import tpl from '../view/test/text.pug'
+$('body').append(`<img src="${imgBase64}"/>`)
+  .append(tpl({hehe: 'fuck'}))
