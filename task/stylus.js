@@ -14,6 +14,7 @@ const browserSync = require('browser-sync').create()
 // var changed = require('gulp-changed')
 const cached = require('gulp-cached')
 const remember = require('gulp-remember')
+const csso = require('gulp-csso')
 // const spriter = require('gulp-css-spriter');
 const config = require('./config')
 const dev = config.dev
@@ -44,6 +45,11 @@ const style = () => {
     .pipe(autoprefixer(autoprefixerOptions))
     .pipe(gulpif(!dev, cleanCSS()))
     .pipe(gulpif(!dev, base64(base64Options)))
+    .pipe(csso({
+      restructure: false,
+      sourceMap: true,
+      debug: dev
+    }))
     .pipe(gulpif(dev, sourcemaps.write()))
     .pipe(plumber.stop())
     .pipe(rename(parseName))
