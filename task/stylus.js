@@ -45,11 +45,11 @@ const style = () => {
     .pipe(autoprefixer(autoprefixerOptions))
     .pipe(gulpif(!dev, cleanCSS()))
     .pipe(gulpif(!dev, base64(base64Options)))
-    .pipe(csso({
+    .pipe(gulpif(!dev,csso({
       restructure: false,
       sourceMap: true,
       debug: dev
-    }))
+    })))
     .pipe(gulpif(dev, sourcemaps.write()))
     .pipe(plumber.stop())
     .pipe(rename(parseName))
