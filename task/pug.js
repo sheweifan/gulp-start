@@ -13,7 +13,7 @@ const config = require('./config')
 const reload = browserSync.reload
 const dev = config.dev
 
-const parseName = file => file.basename = file.basename.replace('.entry', '' ) // dev ? '': '.min')
+const parseName = file => file.basename = file.basename.replace('.entry', '' )
 
 const CACHED_KEY = 'pug-cache'
 
@@ -27,6 +27,9 @@ gulp.task('pug', function () {
     pretty: dev,
     opts: {
       basedir: 'app/view'
+    },
+    data: {
+      dev
     }
   }))
   .pipe(plumber.stop())
@@ -38,5 +41,20 @@ gulp.task('pug', function () {
 })
 
 gulp.task('pug:watch', ['pug'], () => {
-  gulp.watch(config.viewEntery + '**/*.pug', ['pug'])
+  var watcher = gulp.watch(config.viewEntery + '**/*.pug', ['pug'])
+  watcher.on('change', function (event) {
+    if (event.type === 'deleted') {
+      delete cached.caches[CACHED_KEY][event.path]
+      remember.forget(CACHED_KEY, event.path)
+      return
+    }
+    var path = event.path
+    if (path.indexOf('.entry.') == -1) {
+      try {
+        cached.caches[CACHED_KEY] = {}
+      } catch (e) {
+        console.log(e)
+      }
+    }
+  })
 })
