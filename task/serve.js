@@ -6,7 +6,7 @@ const reload = browserSync.reload
 
 gulp.task('serve', () => {
   var target = 'http://api.xxx.com'
-	const middleware = proxyMiddleware(['/xxx/xxx'], {target: target, changeOrigin: true});
+	const middleware = proxyMiddleware(['/xxx/xxx'], {target: target, changeOrigin: true})
   browserSync.init({
     server: {
       baseDir: "./dist",
@@ -26,10 +26,4 @@ gulp.task('serve', () => {
     },
     port: config.port
   })
-
-  // gulp.watch([
-  //   'app/**/*.js',
-  //   'app/**/*.styl',
-  //   'app/**/*.pug'
-  // ]).on('change', reload)
 })
