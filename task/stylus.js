@@ -43,13 +43,9 @@ const style = () => {
     .pipe(gulpif(dev, sourcemaps.init()))
     .pipe(stylus())
     .pipe(autoprefixer(autoprefixerOptions))
-    .pipe(gulpif(!dev, cleanCSS()))
+    // .pipe(gulpif(!dev, cleanCSS()))
     .pipe(gulpif(!dev, base64(base64Options)))
-    .pipe(gulpif(!dev,csso({
-      restructure: false,
-      sourceMap: true,
-      debug: dev
-    })))
+    .pipe(gulpif(!dev,csso()))
     .pipe(gulpif(dev, sourcemaps.write()))
     .pipe(plumber.stop())
     .pipe(rename(parseName))
@@ -65,8 +61,16 @@ gulp.task('style:watch', ['style'], () => {
   const watcher = gulp.watch(config.styleEntery + '**/*.styl', ['style'])
   watcher.on('change', function (event) {
     if (event.type === 'deleted') {
-      delete cached.caches.scripts[event.path]
+      delete cached.caches[CACHED_KEY][event.path]
       remember.forget(CACHED_KEY, event.path)
+    }
+    var path = event.path
+    if (path.indexOf('.entry.') == -1) {
+      try {
+        cached.caches[CACHED_KEY] = {}
+      } catch (e) {
+        console.log(e)
+      }
     }
   })
 })
