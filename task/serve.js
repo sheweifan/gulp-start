@@ -9,7 +9,7 @@ gulp.task('serve', () => {
 	const middleware = proxyMiddleware(['/xxx/xxx'], {target: target, changeOrigin: true})
   browserSync.init({
     server: {
-      baseDir: "./dist",
+      baseDir: './dist',
       directory: true,
 			middleware: middleware
     },
