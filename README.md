@@ -4,3 +4,5 @@
     npm i 
     npm start 
     npm run build
+
+then you have pug/stylus/es6 
