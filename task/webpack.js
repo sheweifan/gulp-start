@@ -15,7 +15,7 @@ const babelConfig = {
   plugins: [
     ['transform-runtime', {
       helpers: false,
-      polyfill: false,
+      polyfill: true,
       regenerator: true,
       moduleName: "babel-runtime"
     }]
